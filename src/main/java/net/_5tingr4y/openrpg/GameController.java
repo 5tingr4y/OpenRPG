@@ -17,11 +17,24 @@
  */
 package net._5tingr4y.openrpg;
 
-public class OpenRPG {
+import net._5tingr4y.openrpg.lwjgl.LWJGLHandler;
 
-    public static void main(String[] args) {
-        GameController gc = new GameController();
+public class GameController {
 
-        gc.start();
+
+
+    public GameController() {
+
+    }
+
+    public void start() {
+
+        LWJGLHandler.setup();
+
+        loop();
+    }
+
+    private void loop() {
+
     }
 }

@@ -18,6 +18,7 @@
 package net._5tingr4y.openrpg;
 
 import net._5tingr4y.openrpg.lwjgl.LWJGLHandler;
+import net._5tingr4y.openrpg.utils.Log;
 
 public class GameController {
 
@@ -28,9 +29,10 @@ public class GameController {
     }
 
     public void start() {
-
+        Log.info(this, "LWJGL setup starting");
         LWJGLHandler.setup();
 
+        Log.info(this, "Setup complete, starting main loop");
         loop();
     }
 

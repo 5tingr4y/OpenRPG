@@ -17,11 +17,17 @@
  */
 package net._5tingr4y.openrpg;
 
+import net._5tingr4y.openrpg.utils.Log;
+
 public class OpenRPG {
 
     public static void main(String[] args) {
+        Log.info(OpenRPG.class, "OpenRPG starting");
+
         GameController gc = new GameController();
 
         gc.start();
+
+        Log.info(OpenRPG.class, "Game Shutting down regularly");
     }
 }

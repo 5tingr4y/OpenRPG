@@ -17,26 +17,66 @@
  */
 package net._5tingr4y.openrpg;
 
-import net._5tingr4y.openrpg.lwjgl.LWJGLHandler;
+import net._5tingr4y.openrpg.lwjgl.OpenGLHandler;
 import net._5tingr4y.openrpg.utils.Log;
+import org.lwjgl.opengl.GL11;
+
+import static org.lwjgl.glfw.GLFW.*;
 
 public class GameController {
 
+    private OpenGLHandler oglHandler;
 
+    private long currentTick;
+    private boolean running;
 
-    public GameController() {
+    private GameController() {
+        currentTick = 0;
 
+        oglHandler = new OpenGLHandler();
     }
 
     public void start() {
         Log.info(this, "LWJGL setup starting");
-        LWJGLHandler.setup();
+        oglHandler.setupOpenGL();
 
         Log.info(this, "Setup complete, starting main loop");
+        running = true;
         loop();
     }
 
     private void loop() {
+        try {
+            while(running && glfwWindowShouldClose(oglHandler.getWindowID()) == GLFW_FALSE) {
+                GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT); // clear the framebuffer
+                glfwSwapBuffers(oglHandler.getWindowID()); // swap the color buffers
 
+
+                glfwPollEvents();
+
+
+                //finally, increment the tick counter
+                currentTick++;
+            }
+        } finally {
+            oglHandler.cleanupOpenGL();
+        }
+    }
+
+    //getters
+    public OpenGLHandler getOGLHandler() {
+        return oglHandler;
+    }
+
+    public long getCurrentTick() {
+        return currentTick;
+    }
+
+
+    //statics
+    private static GameController instance;
+
+    public static GameController get() {
+        return instance == null ? instance = new GameController() : instance;
     }
 }

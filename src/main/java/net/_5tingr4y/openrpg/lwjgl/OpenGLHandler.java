@@ -17,9 +17,129 @@
  */
 package net._5tingr4y.openrpg.lwjgl;
 
+import net._5tingr4y.openrpg.utils.Log;
+import org.lwjgl.glfw.GLFWErrorCallback;
+import org.lwjgl.glfw.GLFWKeyCallback;
+import org.lwjgl.glfw.GLFWVidMode;
+import org.lwjgl.opengl.GL;
+import org.lwjgl.opengl.GL11;
+
+import static org.lwjgl.glfw.GLFW.*;
+import static org.lwjgl.system.MemoryUtil.NULL;
+
 public class OpenGLHandler {
 
-    static void setupOpenGL() {
+    private GLFWErrorCallback errorCallback;
+    private GLFWKeyCallback keyCallback;
 
+    //window handle
+    private long window;
+
+    //data
+    private int width = 1, height = 1;
+    private boolean initialized = false;
+
+    //setup and cleanup
+    public void setupOpenGL() {
+        Log.info(this, "OpenGL setup started");
+
+        glfwSetErrorCallback(errorCallback = GLFWErrorCallback.createPrint(System.err));
+
+        //initialize GLFW. Most GLFW functions will not work before doing this.
+        if(glfwInit() != GLFW_TRUE)
+            throw new IllegalStateException("Unable to initialize GLFW");
+
+        //configure window
+        glfwDefaultWindowHints(); //make sure we have the default window hints (should already be, just to be sure)
+        glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); //window will stay hidden after creation
+        glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); //window will not be resizable
+
+        window = glfwCreateWindow(width, height, "Hello World!", NULL, NULL);
+
+        if(window == NULL)
+            throw new RuntimeException("Failed to create the GLFW window");
+
+        // Setup a key callback. It will be called every time a key is pressed, repeated or released.
+        //TODO: move to inputhandler
+        glfwSetKeyCallback(window, keyCallback = new GLFWKeyCallback() {
+            @Override
+            public void invoke(long window, int key, int scancode, int action, int mods) {
+                if(key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE)
+                    glfwSetWindowShouldClose(window, GLFW_TRUE); // We will detect this in our rendering loop
+            }
+        });
+
+        //get the resolution of the primary monitor
+        GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+
+        glfwSetWindowPos(
+                window,
+                (vidmode.width() - width) / 2,
+                (vidmode.height() - height) / 2
+        );
+
+        //make the OpenGL context current
+        glfwMakeContextCurrent(window);
+
+        //enable v-sync
+        glfwSwapInterval(1);
+
+        //make the window visible
+        glfwShowWindow(window);
+
+        // This line is critical for LWJGL's interoperation with GLFW's
+        // OpenGL context, or any context that is managed externally.
+        // LWJGL detects the context that is current in the current thread,
+        // creates the GLCapabilities instance and makes the OpenGL
+        // bindings available for use.
+        GL.createCapabilities();
+
+        //set the clear color
+        GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+
+        initialized = true;
+        Log.info(this, "OpenGL setup finished");
+    }
+
+    public void cleanupOpenGL() {
+        Log.info(this, "OpenGL cleanup started");
+
+
+
+        Log.info(this, "OpenGL cleanup finished");
+    }
+
+    //getters
+    public int getWidth() {
+        return width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public boolean isInitialized() {
+        return initialized;
+    }
+
+    public long getWindowID() {
+        return window;
+    }
+
+    //setters
+    public void setSize(int width_, int height_) {
+        width = Math.max(1, width_);
+        height = Math.max(1, height_);
+
+        if(initialized) {
+            glfwSetWindowSize(window, width, height);
+
+            GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+            glfwSetWindowPos(
+                    window,
+                    (vidmode.width() - width) / 2,
+                    (vidmode.height() - height) / 2
+            );
+        }
     }
 }

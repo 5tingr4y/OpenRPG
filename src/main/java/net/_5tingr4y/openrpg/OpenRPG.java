@@ -22,12 +22,23 @@ import net._5tingr4y.openrpg.utils.Log;
 public class OpenRPG {
 
     public static void main(String[] args) {
+        processArgs(args);
+
         Log.info(OpenRPG.class, "OpenRPG starting");
 
         GameController gc = new GameController();
-
         gc.start();
 
         Log.info(OpenRPG.class, "Game Shutting down regularly");
+    }
+
+    private static void processArgs(String[] args) {
+        for(String arg: args) {
+            switch(arg) {
+                case "debuglog": Log.debug = true; break;
+
+                default: Log.warn(OpenRPG.class, "Invalid program argument: \"" + arg + "\"; ignoring..."); break;
+            }
+        }
     }
 }

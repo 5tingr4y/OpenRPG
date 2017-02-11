@@ -21,44 +21,47 @@ import java.util.Date;
 
 public class Log {
 
+    public static boolean debug = false;
+    public static boolean info = true;
+    public static boolean warn = true;
+
     public static void debug(Class<?> cl, String message) {
-        System.err.println(format(cl, "Debug", message));
+        if(debug) System.err.println(format(cl, "Debug", message));
     }
 
     public static void debug(Object o, String message) {
-        System.err.println(format(o.getClass(), "Debug", message));
+        if(debug) System.err.println(format(o.getClass(), "Debug", message));
     }
 
 
     public static void info(Class<?> cl, String message) {
-        System.out.println(format(cl, "Info", message));
+        if(info) System.out.println(format(cl, "Info", message));
     }
 
     public static void info(Object o, String message) {
-        System.out.println(format(o.getClass(), "Info", message));
+        if(info) System.out.println(format(o.getClass(), "Info", message));
     }
 
 
     public static void warn(Class<?> cl, String message) {
-        System.err.println(format(cl, "Warning", message));
+        if(warn) System.err.println(format(cl, "Warning", message));
     }
 
     public static void warn(Object o, String message) {
-        System.err.println(format(o.getClass(), "Warning", message));
+        if(warn) System.err.println(format(o.getClass(), "Warning", message));
     }
 
 
 
     private static String format(Class<?> cl, String level, String message) {
-        StringBuilder sb = new StringBuilder("[")
-                .append(new Date(System.currentTimeMillis()))
-                .append("] [")
-                .append(level)
-                .append("] [")
-                .append(cl.getSimpleName())
-                .append("] ")
-                .append(message);
 
-        return sb.toString();
+        return "[" +
+                new Date(System.currentTimeMillis()) +
+                "] [" +
+                level +
+                "] [" +
+                cl.getSimpleName() +
+                "] " +
+                message;
     }
 }

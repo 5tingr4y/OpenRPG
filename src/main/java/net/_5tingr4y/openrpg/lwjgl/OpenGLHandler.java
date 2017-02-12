@@ -19,7 +19,6 @@ package net._5tingr4y.openrpg.lwjgl;
 
 import net._5tingr4y.openrpg.utils.Log;
 import org.lwjgl.glfw.GLFWErrorCallback;
-import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
@@ -30,7 +29,6 @@ import static org.lwjgl.system.MemoryUtil.NULL;
 public class OpenGLHandler {
 
     private GLFWErrorCallback errorCallback;
-    private GLFWKeyCallback keyCallback;
 
     //window handle
     private long window;
@@ -38,6 +36,10 @@ public class OpenGLHandler {
     //data
     private int width = 1, height = 1;
     private boolean initialized = false;
+
+    private OpenGLHandler() {
+        //prevent instances other than the singleton instance
+    }
 
     //setup and cleanup
     public void setupOpenGL() {
@@ -58,16 +60,6 @@ public class OpenGLHandler {
 
         if(window == NULL)
             throw new RuntimeException("Failed to create the GLFW window");
-
-        // Setup a key callback. It will be called every time a key is pressed, repeated or released.
-        //TODO: move to inputhandler
-        glfwSetKeyCallback(window, keyCallback = new GLFWKeyCallback() {
-            @Override
-            public void invoke(long window, int key, int scancode, int action, int mods) {
-                if(key == GLFW_KEY_ESCAPE && action == GLFW_RELEASE)
-                    glfwSetWindowShouldClose(window, GLFW_TRUE); // We will detect this in our rendering loop
-            }
-        });
 
         //get the resolution of the primary monitor
         GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
@@ -104,7 +96,10 @@ public class OpenGLHandler {
     public void cleanupOpenGL() {
         Log.info(this, "OpenGL cleanup started");
 
+        glfwDestroyWindow(window);
 
+        glfwTerminate();
+        errorCallback.release();
 
         Log.info(this, "OpenGL cleanup finished");
     }
@@ -141,5 +136,13 @@ public class OpenGLHandler {
                     (vidmode.height() - height) / 2
             );
         }
+    }
+
+
+    //static
+    private static OpenGLHandler instance;
+
+    public static OpenGLHandler get() {
+        return instance == null ? instance = new OpenGLHandler() : instance;
     }
 }

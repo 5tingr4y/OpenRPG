@@ -17,6 +17,7 @@
  */
 package net._5tingr4y.openrpg;
 
+import net._5tingr4y.openrpg.lwjgl.InputHandler;
 import net._5tingr4y.openrpg.lwjgl.OpenGLHandler;
 import net._5tingr4y.openrpg.utils.Log;
 import org.lwjgl.opengl.GL11;
@@ -26,6 +27,7 @@ import static org.lwjgl.glfw.GLFW.*;
 public class GameController {
 
     private OpenGLHandler oglHandler;
+    private InputHandler inputHandler;
 
     private long currentTick;
     private boolean running;
@@ -33,12 +35,14 @@ public class GameController {
     private GameController() {
         currentTick = 0;
 
-        oglHandler = new OpenGLHandler();
+        oglHandler = OpenGLHandler.get();
+        inputHandler = InputHandler.get();
     }
 
     public void start() {
         Log.info(this, "LWJGL setup starting");
         oglHandler.setupOpenGL();
+        inputHandler.init();
 
         Log.info(this, "Setup complete, starting main loop");
         running = true;
@@ -64,10 +68,6 @@ public class GameController {
     }
 
     //getters
-    public OpenGLHandler getOGLHandler() {
-        return oglHandler;
-    }
-
     public long getCurrentTick() {
         return currentTick;
     }

@@ -17,6 +17,7 @@
  */
 package net._5tingr4y.openrpg;
 
+import net._5tingr4y.openrpg.lwjgl.OpenGLHandler;
 import net._5tingr4y.openrpg.utils.Log;
 
 public class OpenRPG {
@@ -29,7 +30,7 @@ public class OpenRPG {
         GameController gc = GameController.get();
 
         //TODO: read size from settings
-        gc.getOGLHandler().setSize(1024, 576);
+        OpenGLHandler.get().setSize(1024, 576);
 
         gc.start();
 

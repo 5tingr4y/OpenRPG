@@ -44,7 +44,7 @@ public class GameController {
         oglHandler.setupOpenGL();
         inputHandler.init();
 
-        Log.info(this, "Setup complete, starting main loop");
+        Log.info(this, "LWJGL setup complete");
         running = true;
         loop();
     }
@@ -63,7 +63,10 @@ public class GameController {
                 currentTick++;
             }
         } finally {
+            running = false;
+            Log.info(this, "LWJGL cleanup starting");
             oglHandler.cleanupOpenGL();
+            Log.info(this, "LWJGL cleanup complete");
         }
     }
 

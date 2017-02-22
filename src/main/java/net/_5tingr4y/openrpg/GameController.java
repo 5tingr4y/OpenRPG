@@ -19,13 +19,17 @@ package net._5tingr4y.openrpg;
 
 import net._5tingr4y.openrpg.lwjgl.InputHandler;
 import net._5tingr4y.openrpg.lwjgl.OpenGLHandler;
+import net._5tingr4y.openrpg.settings.Settings;
 import net._5tingr4y.openrpg.utils.Log;
 import org.lwjgl.opengl.GL11;
+
+import java.io.IOException;
 
 import static org.lwjgl.glfw.GLFW.*;
 
 public class GameController {
 
+    private Settings settings;
     private OpenGLHandler oglHandler;
     private InputHandler inputHandler;
 
@@ -35,18 +39,30 @@ public class GameController {
     private GameController() {
         currentTick = 0;
 
+        settings = new Settings();
         oglHandler = OpenGLHandler.get();
         inputHandler = InputHandler.get();
     }
 
     public void start() {
         Log.info(this, "LWJGL setup starting");
-        oglHandler.setupOpenGL();
-        inputHandler.init();
-
+        init();
         Log.info(this, "LWJGL setup complete");
+
         running = true;
         loop();
+    }
+
+    private void init() {
+        try {
+            settings.loadSettings();
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(-1);
+        }
+
+        oglHandler.setupOpenGL();
+        inputHandler.init();
     }
 
     private void loop() {

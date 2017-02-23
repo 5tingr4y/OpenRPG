@@ -80,4 +80,26 @@ public class Settings {
 
         Log.info(this, "Loading settings complete; the final settings are:\n" + LoggingUtils.mapAsTable(settings));
     }
+
+    //getters
+    public String getSetting(String name) {
+        return settings.getProperty(name);
+    }
+
+    public String getDefaultSetting(String name) {
+        return defaultSettings.getProperty(name);
+    }
+
+    //setters
+    public String setSetting(String name, String setting) {
+        return (String) settings.setProperty(name, setting);
+    }
+
+    public void writeSettingsToFile() throws IOException {
+        File settingsFile = new File("settings.properties");
+
+        //noinspection ResultOfMethodCallIgnored
+        settingsFile.delete();
+        settings.store(new FileWriter(settingsFile), null);
+    }
 }

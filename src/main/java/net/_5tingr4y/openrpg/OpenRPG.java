@@ -29,9 +29,6 @@ public class OpenRPG {
 
         GameController gc = GameController.get();
 
-        //TODO: read size from settings
-        OpenGLHandler.get().setSize(1024, 576);
-
         gc.start();
 
         Log.info(OpenRPG.class, "Game Shutting down regularly");

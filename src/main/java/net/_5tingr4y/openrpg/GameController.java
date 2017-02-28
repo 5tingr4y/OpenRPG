@@ -46,14 +46,14 @@ public class GameController {
 
     public void start() {
         Log.info(this, "LWJGL setup starting");
-        init();
+        initLWJGL();
         Log.info(this, "LWJGL setup complete");
 
         running = true;
         loop();
     }
 
-    private void init() {
+    private void initLWJGL() {
         try {
             settings.loadSettings();
         } catch (IOException e) {
@@ -61,8 +61,40 @@ public class GameController {
             System.exit(-1);
         }
 
+        applySettings();
+
         oglHandler.setupOpenGL();
         inputHandler.init();
+    }
+
+    private void applySettings() {
+
+        boolean settingsEdited = false;
+
+        int width, height;
+
+        try {
+            width = Integer.parseInt(settings.getSetting("video.display.resolution.width"));
+            height = Integer.parseInt(settings.getSetting("video.display.resolution.height"));
+        } catch(NumberFormatException e) {
+            Log.warn(this, "Error reading display width or height, defaulting to [1920 | 1080]");
+            width = 1920; height = 1080;
+            settings.setSetting("video.display.resolution.width", width);
+            settings.setSetting("video.display.resolution.height", height);
+            settingsEdited = true;
+        }
+
+        OpenGLHandler.get().setSize(width, height);
+        OpenGLHandler.get().setFullscreen(Boolean.parseBoolean(settings.getSetting("video.display.fullscreen")));
+
+
+        if(settingsEdited) {
+            try {
+                settings.writeSettingsToFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     private void loop() {

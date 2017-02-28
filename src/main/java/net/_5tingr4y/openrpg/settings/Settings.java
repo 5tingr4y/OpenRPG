@@ -50,19 +50,10 @@ public class Settings {
             //settings file doesn't exist, create new one
             Log.info(this, "Settings file not found, creating file for default settings");
 
-            for(String key: defaultSettings.stringPropertyNames()) {
-                settings.setProperty(key, defaultSettings.getProperty(key));
-            }
-
+            settings.putAll(defaultSettings);
             settings.store(new FileWriter(settingsFile), null);
-//            is = Thread.currentThread().getContextClassLoader()
-//                    .getResourceAsStream("settings/defaultSettings.properties");
-//
-//            FileUtils.copyInputStreamToFile(is, settingsFile);
-//
-//            settings.load(new FileReader(settingsFile));
-        } else {
 
+        } else {
             settings.load(new FileReader(settingsFile));
 
             Log.info(this, "Settings file found; read the following settings:\n" + LoggingUtils.mapAsTable(settings) + "\n" +
@@ -91,8 +82,8 @@ public class Settings {
     }
 
     //setters
-    public String setSetting(String name, String setting) {
-        return (String) settings.setProperty(name, setting);
+    public String setSetting(String name, Object setting) {
+        return (String) settings.setProperty(name, setting.toString());
     }
 
     public void writeSettingsToFile() throws IOException {

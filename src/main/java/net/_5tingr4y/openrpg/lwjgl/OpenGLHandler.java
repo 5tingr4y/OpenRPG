@@ -35,6 +35,8 @@ public class OpenGLHandler {
 
     //data
     private int width = 1, height = 1;
+    private boolean fullscreen = false;
+
     private boolean initialized = false;
 
     private OpenGLHandler() {
@@ -56,7 +58,8 @@ public class OpenGLHandler {
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); //window will stay hidden after creation
         glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); //window will not be resizable
 
-        window = glfwCreateWindow(width, height, "Hello World!", NULL, NULL);
+        long monitor = fullscreen ? glfwGetPrimaryMonitor() : NULL;
+        window = glfwCreateWindow(width, height, "OpenRPG", monitor, NULL);
 
         if(window == NULL)
             throw new RuntimeException("Failed to create the GLFW window");
@@ -64,11 +67,13 @@ public class OpenGLHandler {
         //get the resolution of the primary monitor
         GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
 
-        glfwSetWindowPos(
-                window,
-                (vidmode.width() - width) / 2,
-                (vidmode.height() - height) / 2
-        );
+        if(!fullscreen) {
+            glfwSetWindowPos(
+                    window,
+                    (vidmode.width() - width) / 2,
+                    (vidmode.height() - height) / 2
+            );
+        }
 
         //make the OpenGL context current
         glfwMakeContextCurrent(window);
@@ -113,6 +118,10 @@ public class OpenGLHandler {
         return height;
     }
 
+    public boolean isFullscreen() {
+        return fullscreen;
+    }
+
     public boolean isInitialized() {
         return initialized;
     }
@@ -136,6 +145,10 @@ public class OpenGLHandler {
                     (vidmode.height() - height) / 2
             );
         }
+    }
+
+    public void setFullscreen(boolean fs) {
+        fullscreen = fs;
     }
 
 

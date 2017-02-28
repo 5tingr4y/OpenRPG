@@ -56,7 +56,7 @@ public class OpenGLHandler {
         //configure window
         glfwDefaultWindowHints(); //make sure we have the default window hints (should already be, just to be sure)
         glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE); //window will stay hidden after creation
-        glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE); //window will not be resizable
+        glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE); //window will not be resizable
 
         long monitor = fullscreen ? glfwGetPrimaryMonitor() : NULL;
         window = glfwCreateWindow(width, height, "OpenRPG", monitor, NULL);
@@ -138,17 +138,34 @@ public class OpenGLHandler {
         if(initialized) {
             glfwSetWindowSize(window, width, height);
 
-            GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
-            glfwSetWindowPos(
-                    window,
-                    (vidmode.width() - width) / 2,
-                    (vidmode.height() - height) / 2
-            );
+            if(!fullscreen) {
+                GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+                glfwSetWindowPos(
+                        window,
+                        (vidmode.width() - width) / 2,
+                        (vidmode.height() - height) / 2
+                );
+            }
         }
     }
 
-    public void setFullscreen(boolean fs) {
-        fullscreen = fs;
+    public void setFullscreen(boolean fullscreen_) {
+        if(initialized) {
+            boolean oldFullscreen = fullscreen;
+            fullscreen = fullscreen_;
+
+            if(!fullscreen && oldFullscreen) {
+                //switched from fullscreen to window mode, adjust window position
+                GLFWVidMode vidmode = glfwGetVideoMode(glfwGetPrimaryMonitor());
+                glfwSetWindowPos(
+                        window,
+                        (vidmode.width() - width) / 2,
+                        (vidmode.height() - height) / 2
+                );
+            }
+        } else {
+            fullscreen = fullscreen_;
+        }
     }
 
 

@@ -17,6 +17,7 @@
  */
 package net._5tingr4y.openrpg;
 
+import net._5tingr4y.openrpg.data.GameData;
 import net._5tingr4y.openrpg.lwjgl.InputHandler;
 import net._5tingr4y.openrpg.lwjgl.OpenGLHandler;
 import net._5tingr4y.openrpg.settings.Settings;
@@ -32,6 +33,7 @@ public class GameController {
     private Settings settings;
     private OpenGLHandler oglHandler;
     private InputHandler inputHandler;
+    private GameData gameData;
 
     private long currentTick;
     private boolean running;
@@ -42,6 +44,7 @@ public class GameController {
         settings = new Settings();
         oglHandler = OpenGLHandler.get();
         inputHandler = InputHandler.get();
+        gameData = GameData.get();
     }
 
     public void start() {
@@ -68,7 +71,7 @@ public class GameController {
     }
 
     private void applySettings() {
-
+        //TODO: make public and move to Settings
         boolean settingsEdited = false;
 
         int width, height;
@@ -103,11 +106,16 @@ public class GameController {
                 GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT); // clear the framebuffer
                 glfwSwapBuffers(oglHandler.getWindowID()); // swap the color buffers
 
-
+                //window handling
                 glfwPollEvents();
 
+                //updating
+                gameData.updateWorlds();
 
-                //finally, increment the tick counter
+                //rendering
+                gameData.renderWorld();
+
+                //increment the tick counter
                 currentTick++;
             }
         } finally {

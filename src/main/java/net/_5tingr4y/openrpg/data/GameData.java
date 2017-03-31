@@ -19,14 +19,30 @@ package net._5tingr4y.openrpg.data;
 
 import net._5tingr4y.openrpg.data.world.World;
 
-import java.util.LinkedList;
-import java.util.List;
+public class GameData {
 
-public class DataContainer {
+    private World gameWorld;
+    private World menuWorld;
 
-    private List<World> worlds = new LinkedList<>();
+    private GameData() {
+        gameWorld = new World();
+        menuWorld = new World();
+    }
 
     public void updateWorlds() {
-        worlds.forEach(World::update);
+        gameWorld.update();
+        menuWorld.update();
+    }
+
+    public void renderWorld() {
+        gameWorld.render();
+        menuWorld.render();
+    }
+
+    //static
+    private static GameData instance;
+
+    public static GameData get() {
+        return instance == null ? instance = new GameData() : instance;
     }
 }

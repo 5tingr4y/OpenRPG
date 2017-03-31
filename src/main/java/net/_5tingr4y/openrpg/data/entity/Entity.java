@@ -17,17 +17,23 @@
  */
 package net._5tingr4y.openrpg.data.entity;
 
-public class Entity {
+public class Entity implements Comparable<Entity> {
 
     protected float x, y;
     protected float dx, dy;
+
+    protected float rotation;
+    protected float drotation;
+
+    private int priority;
 
     private boolean isDead;
 
     public Entity(int x_, int y_) {
         x = x_;
         y = y_;
-        dx = dy = 0;
+        rotation = 0;
+        dx = dy = drotation = 0;
 
         isDead = false;
     }
@@ -44,7 +50,7 @@ public class Entity {
     }
 
     public void render() {
-
+        //TODO
     }
 
     //getters
@@ -60,28 +66,39 @@ public class Entity {
         return isDead;
     }
 
+    @Override
+    public int compareTo(Entity o) {
+        return priority - o.priority;
+    }
+
     //setters
-    public void setX(float x_) {
+    public Entity setX(float x_) {
         x = x_;
+        return this;
     }
 
-    public void setY(float y_) {
+    public Entity setY(float y_) {
         y = y_;
+        return this;
     }
 
-    public void moveX(float dx_) {
+    public Entity moveX(float dx_) {
         dx += dx_;
+        return this;
     }
 
-    public void moveY(double dy_) {
+    public Entity moveY(double dy_) {
         dy += dy_;
+        return this;
     }
 
-    public void resetPositionDelta() {
+    public Entity resetPositionDelta() {
         dx = dy = 0;
+        return this;
     }
 
-    public void die() {
+    public Entity die() {
         isDead = true;
+        return this;
     }
 }

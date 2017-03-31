@@ -19,6 +19,7 @@ package net._5tingr4y.openrpg.data.world;
 
 import net._5tingr4y.openrpg.data.entity.Entity;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -27,32 +28,44 @@ public class World {
 
     private List<Entity> entities;
 
-    private boolean active;
-    private boolean render;
+    private boolean active = false;
+    private boolean render = false;
 
     public World() {
         entities = new LinkedList<>();
     }
 
+    //update and render
     public void update() {
         if(active) {
+            Collections.sort(entities);
+
             entities.forEach(Entity::tick);
             entities.forEach(Entity::applyPosition);
-        }
 
-        Iterator<Entity> iterator = entities.iterator();
-        while(iterator.hasNext()) {
-            Entity e = iterator.next();
+            Iterator<Entity> iterator = entities.iterator();
+            while(iterator.hasNext()) {
+                Entity e = iterator.next();
 
-            if(e.isDead())
-                iterator.remove();
+                if(e.isDead())
+                    iterator.remove();
+            }
         }
     }
 
     public void render() {
         if(render) {
-
+            entities.forEach(Entity::render);
         }
+    }
+
+    //setters
+    public void setActive(boolean active_) {
+        active = active_;
+    }
+
+    public void setRender(boolean render_) {
+        render = render_;
     }
 
     public void addEntity(Entity e) {
